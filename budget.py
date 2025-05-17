@@ -3,7 +3,7 @@
 # all the necessary libraries imported
 import os
 from datetime import datetime
-import math
+import math as m
 import time as t
 from pathlib import Path
 from tkinter import *
