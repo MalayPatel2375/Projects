@@ -132,14 +132,14 @@ class MyBudegt:
                 status_array.append(split_list[2])
                 num_array.append(split_list[0])
         filterednum_array = [float(element[1:]) for element in num_array]
-        pair_dict = dict(zip(filterednum_array,status_array))
+        pair_list = list(zip(filterednum_array,status_array))
 
         #part-2 :- divides data into 4 categories
         self.income = 0
         self.expenses = 0
         self.investment = 0
         self.savings = 0
-        for keys,values in pair_dict.items():
+        for keys,values in pair_list:
             if values == 'In':
                 self.income += keys
             elif values == 'Out':
