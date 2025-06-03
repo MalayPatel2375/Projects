@@ -1,16 +1,27 @@
-#Budget project by Malay Patel
+#Budget project:
 
-# all the necessary libraries imported
+#Main functions:
+
+#1. FileCreator
+#2. Transaction adder
+#3. DeleteFile
+#4. DataViewer
+#5. DataBase
+#6. DataCalc
+#7. DataStats
+#8. Sorted_DataDisplayer
+#9. Compare_MonthlyData
+#10. Main
+
 import os
 from datetime import datetime
-import math as m
+import math
 import time as t
 from pathlib import Path
 from tkinter import *
 import matplotlib.pyplot as plot
 import pandas as pd
 
-# main class where every function is held
 class MyBudegt:
 
     main_list=[] # all data goes here
@@ -24,7 +35,7 @@ class MyBudegt:
             self.path = path
             self.fileName = None
 
-    # creates new file
+    # creates new file everytime when called
     def FileCreator(self):
         full_path =  os.path.join(self.path, self.fileName)
 
@@ -37,94 +48,98 @@ class MyBudegt:
 
     # adds new transaction in the created file and calls DataBase
     def TransactionAdder(self):
-        x = open(self.fileName, "a")
 
         format = "%d-%m-%Y"
         check = True
-        date_input = input("(dd-mm-yyyy) Date: ") # date input
+        date_input = input("(dd-mm-yyyy) Date: ")
 
-        if check == bool(datetime.strptime(date_input, format)): # checks date format
+        if check == bool(datetime.strptime(date_input, format)):
             MyBudegt.expense_details['date'] = date_input
             print("Date added to list successfully.")
         else:
             print("Wrong date format.")
+        t.sleep(1.1)
 
-        amt_input = float(input("Amount: ")) # amount input
+        amt_input = float(input("Amount: "))
         MyBudegt.expense_details['amount'] = amt_input
         print("Amount added to list successfully.")
+        t.sleep(1.1)
 
-        cate_input = input("Category/Type: ").capitalize() # category input
+        cate_input = input("Category/Type: ").capitalize()
         MyBudegt.expense_details['category'] = cate_input
         print("Category added to list successfully.")
+        t.sleep(1.1)
 
-        descr_input = input("Type(In/Out/Invest/Savings): ").capitalize() # type input
+        descr_input = input("Type(In/Out/Invest/Savings): ").capitalize()
         MyBudegt.expense_details['type'] = descr_input
         print("Details added to list successfully.")
+        t.sleep(1.1)
 
-        MyBudegt.main_list.append(MyBudegt.expense_details) # expense_details appended to main_list
+        MyBudegt.main_list.append(MyBudegt.expense_details)
         print("List has been updated")
         print("Now printing in external file....")
         t.sleep(1.1)
 
+        x = open(self.fileName, "a")
         x.write(f"{MyBudegt.expense_details['date']} | ${MyBudegt.expense_details['amount']} | {MyBudegt.expense_details['category']} | {MyBudegt.expense_details['type']} \n")
         x.close()
 
-        self.DataBase() # calls DataBase function
+        self.DataBase()
 
-    # deletes the given files
+    # will be used to delete given files
     def FileRemover(self):
         
-        file_type = input("Which file would you like to remove(Data or Main): ").capitalize() 
+        file_type = input("Which file would you like to remove(Data or Main): ").capitalize()
         file_name = input("Name the file: ").capitalize()
         
         match file_type:
         
-            case "Data": # case for data file
+            case "Data":
                 full_path = self.path+"\\data_"+file_name
                 if os.path.exists(full_path):
                     os.remove(full_path)
                     t.sleep(1.1)
-                    print(f"File '{file_name}' has been removed successfully.")
+                    print(f"Data File '{file_name}' has been removed successfully.")
                 else:
-                    print(f"File '{file_name}' not found.")
+                    print(f"Data File '{file_name}' not found.")
 
-            case "Main": # case for main file
+            case "Main":
                 full_path = self.path+"\\"+file_name
                 if os.path.exists(full_path):
                     os.remove(full_path)
                     t.sleep(1.1)
-                    print(f"File '{file_name}' has been removed successfully.")
+                    print(f"Main File '{file_name}' has been removed successfully.")
                 else:
-                    print(f"File '{file_name}' not found.")
+                    print(f"Main File '{file_name}' not found.")
 
-    # used to see the data from Main file in terminal
+    # admin mode to view and print out all the database file in terminal
     def DataViewer(self):
         with open(self.path+"\\"+self.fileName) as k:
             lines = k.readlines()
             for line in lines:
                 print(line)
 
-    # Creates new database file to store data in data_file
+    # Creates new database file to store imp data
     def DataBase(self):
         data_fileName = "data_"+self.fileName
         full_dataPath = Path(os.path.join(self.path, data_fileName))
 
         if full_dataPath.exists():
             z = open(full_dataPath, "a")
-            z.write(f"${MyBudegt.expense_details['amount']} - {MyBudegt.expense_details['type']}\n")
+            z.write(f"{MyBudegt.expense_details['date']} - ${MyBudegt.expense_details['amount']} - {MyBudegt.expense_details['type']}\n")
             z.close()
         else:
             z = open(full_dataPath, "x")
             z.write(f"{self.fileName} DataBase \n")
-            z.write(f"${MyBudegt.expense_details['amount']} - {MyBudegt.expense_details['type']}\n")
+            z.write(f"{MyBudegt.expense_details['date']} - ${MyBudegt.expense_details['amount']} - {MyBudegt.expense_details['type']}\n")
             z.close()
 
-    # Function to calculate all the required data for DataStats function
+    # will be used to calculate all data ........
     def DataCalc(self):
-        #part-1 :- extracts data from the data_file, filters and stores in dictionary 
+        #part-1
         num_array = []
         status_array = []
-        m = open(self.path+"\\data_"+self.fileName)
+        m = open(self.path+"\\data_"+self.fileName, 'r')
         lines = m.readlines()
         for line in lines:
             if '$' in line.strip():
@@ -134,7 +149,7 @@ class MyBudegt:
         filterednum_array = [float(element[1:]) for element in num_array]
         pair_list = list(zip(filterednum_array,status_array))
 
-        #part-2 :- divides data into 4 categories
+        #part-2
         self.income = 0
         self.expenses = 0
         self.investment = 0
@@ -150,10 +165,10 @@ class MyBudegt:
                 self.savings += keys
         self.cash_flow = self.income - self.expenses
 
-        #part-3 :- gives a ratio
+        #part-3
         self.expense_ratio = round(((self.expenses/self.income)*100),2)
 
-        #part-4 :- estimates input from user
+        #part-4
         self.estimated_expenses = int(input("What is your estimated expenses for this month:-  "))
         self.estimated_income = int(input("What is your estimated income for this month:-  "))
         self.diff_expense = self.estimated_expenses - self.expenses
@@ -231,7 +246,7 @@ class MyBudegt:
         elif self.savings > self.estimated_savings:
             print(f"You saved more this month by --> {self.savings - self.estimated_savings}")
         
-    # creates separate tables for each categories in external display using Tkinter 
+    # creates separate tables for each categories in external file 
     def Sorted_DataDisplayer(self):
         income_dataList = []
         expenses_dataList = []
@@ -244,29 +259,27 @@ class MyBudegt:
         for line in lineReader:
             if '$' in line.strip():
                 table_splitList = line.split()
-                table_splitList = [table_splitList[0], table_splitList[2]]
-                if table_splitList[1] == 'In':
+                table_splitList = [table_splitList[0], table_splitList[2], table_splitList[4]]
+                if table_splitList[2] == 'In':
                     income_dataList.append(table_splitList)
-                elif table_splitList[1] == 'Out':
+                elif table_splitList[2] == 'Out':
                     expenses_dataList.append(table_splitList)
-                elif table_splitList[1] == 'Invest':
+                elif table_splitList[2] == 'Invest':
                     invests_dataList.append(table_splitList)
-                elif table_splitList[1] == 'Savings':
+                elif table_splitList[2] == 'Savings':
                     savings_dataList.append(table_splitList)
         
         root = Tk()
         root.title('Monthly Budget Data')
 
-        # helper function to create display for the data
         def table_displayer(parent, title, data, row_position, col_position):
 
             frame = LabelFrame(parent, text=title, padx=10, pady=10, font=('Arial', 12, 'bold'))
-            frame.grid(row=row_position, column=col_position, padx=10, pady=10) # creates a grid to properly separate and display data
+            frame.grid(row=row_position, column=col_position, padx=10, pady=10)
 
-            header = ['Amount', 'Category']
+            header = ['Date', 'Amount', 'Category']
             full_data = [header] + data
 
-            # this loop fills data in the grid cells
             for i,row in enumerate(full_data):
                 for j, val in enumerate(row):
                     label = Label(frame, text=val, width=15, fg="black", font=('Arial', 12), borderwidth=1, relief='solid')
@@ -289,7 +302,6 @@ class MyBudegt:
         mth1_linerdr = month1_filePath.readlines()
         mth2_linerdr = month2_filePath.readlines()
 
-        # list of lists to store data categorically
         mth1_incomedataList = []
         mth1_expensesdataList = []
         mth1_investdataList = []
@@ -324,8 +336,7 @@ class MyBudegt:
                     mth2_investdataList.append(float(temp_splitList[0][1:]))
                 elif temp_splitList[1] == 'Savings':
                     mth2_savingsdataList.append(float(temp_splitList[0][1:]))
-        
-        # data is stored by adding all the data from above lists for graphs
+
         data = {self.fileName: [sum(mth1_incomedataList), 
                                 sum(mth1_expensesdataList), 
                                 sum(mth1_investdataList), 
@@ -335,10 +346,8 @@ class MyBudegt:
                                 sum(mth2_investdataList), 
                                 sum(mth2_savingsdataList)]}
         
-        # using pandas dataframe to plot graphs
         df = pd.DataFrame(data, columns=[self.fileName, compare_fileName], index = ['Income', 'Expenses', 'Investments', 'Savings'])
 
-        # plotting graph
         df.plot.bar()
 
         plot.show()
@@ -346,12 +355,12 @@ class MyBudegt:
     # main function where collection of above funcs will be called
     def Main(self):
         
-        # match case of user_choice
         match user_choice:
 
             case 1:
                 print("Case 1")
                 obj1.FileCreator()
+                print(f"File '{self.fileName}' created successfully in {self.path} directory.")
             case 2:
                 print("Case 2") 
                 obj1.TransactionAdder()
@@ -372,7 +381,7 @@ class MyBudegt:
                 obj1.Compare_MonthlyData()
 
 
-input_path = "C:\\Users\\malay\\OneDrive\\Desktop\\Budget"
+input_path = os.getcwd()
 
 print("Welcome to Personal Budget Program!")
 t.sleep(1.1)
@@ -386,7 +395,6 @@ print("Modes:\n1. Create a new budget file.\n" \
     "7. See the comparison of different months in graphs.\n" \
     "0. Exit the Program.\n")
 
-# error handling
 while True:
     try:
         user_choice = int(input("Choose what you would like to do today: "))
@@ -400,13 +408,12 @@ if user_choice == 0:
     print("Exitting the Program.....")
     t.sleep(1.1)
 
-# infinite loop until user chooses to leave
 while user_choice != 0:
     if user_choice != 3:
         input_fileName = input("Give the name of the month you would like to work on: ").capitalize()
-        obj1 = MyBudegt(input_path, input_fileName) # MyBudget object created
+        obj1 = MyBudegt(input_path, input_fileName)
         obj1.Main()
     else:
-        obj1 = MyBudegt(input_path) # MyBudget object is created
+        obj1 = MyBudegt(input_path)
         obj1.Main()
     user_choice = int(input("Enter the mode number here to do anything more: "))
