@@ -36,7 +36,7 @@
 ### 📥 Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/MyBudegt.git
+git clone https://github.com/MalayPatel2375/Projects.git
 ```
 
 ### ▶️ Run the program
