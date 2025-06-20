@@ -144,8 +144,8 @@ class MyBudegt:
         for line in lines:
             if '$' in line.strip():
                 split_list= line.split()
-                status_array.append(split_list[2])
-                num_array.append(split_list[0])
+                num_array.append(split_list[2])
+                status_array.append(split_list[4])
         filterednum_array = [float(element[1:]) for element in num_array]
         pair_list = list(zip(filterednum_array,status_array))
 
